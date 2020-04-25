@@ -25,7 +25,7 @@ class HASH
 	/**
 	 * Create md5 string
 	 */
-	lambda string md5(string s)
+	pure string md5(string s)
 	{
 		#switch
 		#case ifcode PHP then
@@ -39,7 +39,7 @@ class HASH
 	/**
 	 * Create hash string
 	 */
-	lambda string hash(string text, string key, string algo)
+	pure string hash(string text, string key, string algo)
 	{
 		#switch
 		#case ifcode PHP then
@@ -53,7 +53,7 @@ class HASH
 	/**
 	 * Verify hash string
 	 */
-	lambda string verify(string text, string sign, string key, string algo)
+	pure string verify(string text, string sign, string key, string algo)
 	{
 		#switch
 		#case ifcode PHP then

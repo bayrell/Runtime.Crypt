@@ -30,7 +30,7 @@ class JWT
 	/**
 	 * Returns method
 	 */
-	lambda string getMethod(string algo)
+	pure string getMethod(string algo)
 	{
 		if (algo == 'HS256') return "hash";
 		if (algo == 'HS384') return "hash";
@@ -46,7 +46,7 @@ class JWT
 	/**
 	 * Returns method
 	 */
-	lambda string getAlgo(string algo)
+	pure string getAlgo(string algo)
 	{
 		if (algo == 'HS256') return "SHA256";
 		if (algo == 'HS384') return "SHA384";
@@ -62,7 +62,7 @@ class JWT
 	/**
 	 * Create jwt sign
 	 */
-	lambda string createSign(string head_b64, string data_b64, string key, string algo)
+	pure string createSign(string head_b64, string data_b64, string key, string algo)
 	{
 		string m = static::getMethod(algo);
 		string a = static::getAlgo(algo);
@@ -79,7 +79,7 @@ class JWT
 	/**
 	 * Validate jwt sign
 	 */
-	lambda bool validateSign(string head_b64, string data_b64, string sign, string key, string algo)
+	pure bool validateSign(string head_b64, string data_b64, string sign, string key, string algo)
 	{
 		string m = static::getMethod(algo);
 		string a = static::getAlgo(algo);
@@ -96,7 +96,7 @@ class JWT
 	/**
 	 * Create jwt
 	 */
-	lambda string encode(Dict d, string key, string algo)
+	pure string encode(Dict d, string key, string algo)
 	{
 		string data_json = RuntimeUtils::json_encode(d);
 		string data_b64 = RuntimeUtils::base64_encode_url(data_json);
@@ -110,7 +110,7 @@ class JWT
 	/**
 	 * Decode jwt
 	 */
-	lambda string decode(string token_str, string key, string algo = "")
+	pure Dict decode(string token_str, string key, string algo = "")
 	{
 		Collection arr = rs::split("\\.", token_str);
 		string head_b64 = arr.get(0, "");

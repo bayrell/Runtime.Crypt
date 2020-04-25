@@ -40,7 +40,7 @@ class RSA
 	/**
 	 * Sign message by private key
 	 */
-	lambda bool sign(string text, string private_key, string algo)
+	pure bool sign(string text, string private_key, string algo)
 	{
 		#switch
 		#case ifcode PHP then
@@ -56,7 +56,7 @@ class RSA
 	/**
 	 * Sign message by private key
 	 */
-	lambda bool verify(string text, string sign, string public_key, string algo)
+	pure bool verify(string text, string sign, string public_key, string algo)
 	{
 		#switch
 		#case ifcode PHP then
@@ -71,7 +71,7 @@ class RSA
 	/**
 	 * Verify password
 	 */
-	lambda bool encode(string str, string private_key)
+	pure bool encode(string str, string private_key)
 	{
 		#switch
 		#case ifcode PHP then
@@ -88,7 +88,7 @@ class RSA
 	/**
 	 * Create password hash
 	 */
-	lambda string decode(string str, string public_key)
+	pure string decode(string str, string public_key)
 	{
 		#switch
 		#case ifcode PHP then
