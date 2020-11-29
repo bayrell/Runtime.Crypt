@@ -61,7 +61,7 @@ class RSA
 		#switch
 		#case ifcode PHP then
 		$pk = @openssl_get_publickey($public_key);
-		return openssl_verify($text, $sign, $pk, static::getAlgo($algo));
+		return @openssl_verify($text, $sign, $pk, static::getAlgo($algo));
 		#endswitch
 		return '';
 	}
