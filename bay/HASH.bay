@@ -42,7 +42,7 @@ class HASH
 	{
 		#switch
 		#case ifcode PHP then
-		return hash_hmac($algo, $text, $key);
+		return hash_hmac($algo, $text, $key, true);
 		#endswitch
 		return "";
 	}
@@ -55,7 +55,7 @@ class HASH
 	{
 		#switch
 		#case ifcode PHP then
-		$hash = hash_hmac($algo, $text, $key);
+		$hash = hash_hmac($algo, $text, $key, true);
 		return hash_equals($sign, $hash);
 		#endswitch
 		return "";

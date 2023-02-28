@@ -93,9 +93,9 @@ class JWT
 	 */
 	pure string encode(Dict d, string key, string algo)
 	{
-		string data_json = rs::json_encode(d);
+		string data_json = rtl::json_encode(d);
 		string data_b64 = rs::base64_encode_url(data_json);
-		string head_b64 = rs::base64_encode_url(rs::json_encode({'alg':algo,'typ':'JWT'}));
+		string head_b64 = rs::base64_encode_url(rtl::json_encode({'alg':algo,'typ':'JWT'}));
 		string sign = static::createSign(head_b64, data_b64, key, algo);
 		return head_b64 ~ '.' ~ data_b64 ~ '.' ~ sign;
 	}
@@ -113,7 +113,7 @@ class JWT
 		
 		/* Decode head */
 		string head_json = rs::base64_decode(head_b64);
-		Dict head_data = rs::json_decode(head_json);
+		Dict head_data = rtl::json_decode(head_json);
 		if (head_data == null)
 			return
 			{
@@ -124,7 +124,7 @@ class JWT
 		
 		/* Decode data */
 		string data_json = rs::base64_decode(data_b64);
-		Dict data = rs::json_decode(data_json);
+		Dict data = rtl::json_decode(data_json);
 		if (data == null)
 			return
 			{
