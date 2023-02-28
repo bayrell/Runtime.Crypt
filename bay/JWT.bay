@@ -1,7 +1,7 @@
 /*!
  *  Bayrell Runtime Library
  *
- *  (c) Copyright 2018-2019 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ use Runtime.Crypt.RSA;
 class JWT
 {
 	
-	
 	/**
 	 * Returns method
 	 */
@@ -42,7 +41,6 @@ class JWT
 	}
 	
 	
-	
 	/**
 	 * Returns method
 	 */
@@ -56,7 +54,6 @@ class JWT
 		if (algo == 'RS512') return "SHA512";
 		return "";
 	}
-	
 	
 	
 	/**
@@ -75,7 +72,6 @@ class JWT
 	}
 	
 	
-	
 	/**
 	 * Validate jwt sign
 	 */
@@ -92,7 +88,6 @@ class JWT
 	}
 	
 	
-	
 	/**
 	 * Create jwt
 	 */
@@ -106,7 +101,6 @@ class JWT
 	}
 	
 	
-	
 	/**
 	 * Decode jwt
 	 */
@@ -116,29 +110,61 @@ class JWT
 		string head_b64 = arr.get(0, "");
 		string data_b64 = arr.get(1, "");
 		string sign = arr.get(2, "");
-		string head_json = rs::base64_decode(head_b64);
-		Dict head = rs::json_decode(head_json);
-		if (head == null) return null;
 		
-		string token_algo = head.get("alg","");
+		/* Decode head */
+		string head_json = rs::base64_decode(head_b64);
+		Dict head_data = rs::json_decode(head_json);
+		if (head_data == null)
+			return
+			{
+				"head": null,
+				"data": null,
+				"valid": false,
+			};
+		
+		/* Decode data */
+		string data_json = rs::base64_decode(data_b64);
+		Dict data = rs::json_decode(data_json);
+		if (data == null)
+			return
+			{
+				"head": null,
+				"data": null,
+				"valid": false,
+			};
+		
+		/* Check algo */
+		string token_algo = head_data.get("alg","");
 		if (token_algo == "") return null;
 		if (algo != "")
 		{
 			if (token_algo != algo)
 			{
-				return null;
+				return
+				{
+					"head": head_data,
+					"data": data,
+					"valid": false,
+				};
 			}
 		}
 		
 		/* Validate sign */
 		bool flag = static::validateSign(head_b64, data_b64, sign, key, token_algo);
-		if (not flag) return null;
+		if (not flag)
+			return
+			{
+				"head": head_data,
+				"data": data,
+				"valid": false,
+			};
 		
-		/* Decode data */
-		string json = rs::base64_decode(data_b64);
-		if (json == "") return null;
-		Dict d = rs::json_decode(json);
-		return d;
+		return
+		{
+			"head": head_data,
+			"data": data,
+			"valid": true,
+		};
 	}
 	
 }
