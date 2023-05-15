@@ -106,7 +106,7 @@ class JWT
 	 */
 	pure Dict decode(string token_str, string key, string algo = "")
 	{
-		Collection arr = rs::split("\\.", token_str);
+		Collection arr = rs::split(".", token_str);
 		string head_b64 = arr.get(0, "");
 		string data_b64 = arr.get(1, "");
 		string sign = arr.get(2, "");
