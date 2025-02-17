@@ -19,12 +19,23 @@
 namespace Runtime.Crypt;
 
 use Runtime.rs;
+use Runtime.BaseStruct;
 use Runtime.Crypt.HASH;
 use Runtime.Crypt.RSA;
 
 
-class JWT
+struct JWT extends BaseStruct
 {
+	Dict data = null;
+	bool correct = false;
+	string token = "";
+	
+	
+	/**
+	 * Returns true if JWT is correct
+	 */
+	bool isCorrect() => this.correct;
+	
 	
 	/**
 	 * Returns method
@@ -91,13 +102,18 @@ class JWT
 	/**
 	 * Create jwt
 	 */
-	pure string encode(Dict d, string key, string algo)
+	pure string encode(Dict data, string key, string algo)
 	{
-		string data_json = rtl::json_encode(d);
+		string data_json = rtl::json_encode(data);
 		string data_b64 = rs::base64_encode_url(data_json);
 		string head_b64 = rs::base64_encode_url(rtl::json_encode({'alg':algo,'typ':'JWT'}));
 		string sign = static::createSign(head_b64, data_b64, key, algo);
-		return head_b64 ~ '.' ~ data_b64 ~ '.' ~ sign;
+		return new JWT
+		{
+			"correct": true,
+			"data": data,
+			"token": head_b64 ~ '.' ~ data_b64 ~ '.' ~ sign,
+		};
 	}
 	
 	
@@ -114,24 +130,12 @@ class JWT
 		/* Decode head */
 		string head_json = rs::base64_decode(head_b64);
 		Dict head_data = rtl::json_decode(head_json);
-		if (head_data == null)
-			return
-			{
-				"head": null,
-				"data": null,
-				"valid": false,
-			};
+		if (head_data == null) return null;
 		
 		/* Decode data */
 		string data_json = rs::base64_decode(data_b64);
 		Dict data = rtl::json_decode(data_json);
-		if (data == null)
-			return
-			{
-				"head": null,
-				"data": null,
-				"valid": false,
-			};
+		if (data == null) return null;
 		
 		/* Check algo */
 		string token_algo = head_data.get("alg","");
@@ -140,11 +144,11 @@ class JWT
 		{
 			if (token_algo != algo)
 			{
-				return
+				return new JWT
 				{
-					"head": head_data,
+					"correct": false,
 					"data": data,
-					"valid": false,
+					"token": token_str,
 				};
 			}
 		}
@@ -152,18 +156,18 @@ class JWT
 		/* Validate sign */
 		bool flag = static::validateSign(head_b64, data_b64, sign, key, token_algo);
 		if (not flag)
-			return
+			return new JWT
 			{
-				"head": head_data,
+				"correct": false,
 				"data": data,
-				"valid": false,
+				"token": token_str,
 			};
 		
-		return
+		return new JWT
 		{
-			"head": head_data,
+			"correct": true,
 			"data": data,
-			"valid": true,
+			"token": token_str,
 		};
 	}
 	
