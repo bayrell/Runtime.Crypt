@@ -122,6 +122,8 @@ struct JWT extends BaseStruct
 	 */
 	pure Dict decode(string token_str, string key, string algo = "")
 	{
+		if (not token_str) return;
+		
 		Collection arr = rs::split(".", token_str);
 		string head_b64 = arr.get(0, "");
 		string data_b64 = arr.get(1, "");
