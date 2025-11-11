@@ -19,12 +19,12 @@
 namespace Runtime.Crypt;
 
 use Runtime.rs;
-use Runtime.BaseStruct;
+use Runtime.BaseObject;
 use Runtime.Crypt.HASH;
 use Runtime.Crypt.RSA;
 
 
-struct JWT extends BaseStruct
+class JWT extends BaseObject
 {
 	Dict data = null;
 	bool correct = false;
@@ -172,5 +172,4 @@ struct JWT extends BaseStruct
 			"token": token_str,
 		};
 	}
-	
 }
