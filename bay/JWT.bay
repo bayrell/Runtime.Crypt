@@ -19,16 +19,26 @@
 namespace Runtime.Crypt;
 
 use Runtime.rs;
-use Runtime.BaseStruct;
+use Runtime.BaseObject;
 use Runtime.Crypt.HASH;
 use Runtime.Crypt.RSA;
 
 
-struct JWT extends BaseStruct
+class JWT extends BaseObject
 {
 	Dict data = null;
 	bool correct = false;
 	string token = "";
+	
+	
+	/**
+	 * Create object
+	 */
+	void constructor(Map data = null)
+	{
+		parent();
+		this._assign_values(data);
+	}
 	
 	
 	/**
@@ -92,6 +102,7 @@ struct JWT extends BaseStruct
 		string a = static::getAlgo(algo);
 		string text = head_b64 ~ '.' ~ data_b64;
 		bool flag = false;
+		if (!key) return flag;
 		sign = rs::base64_decode_url(sign);
 		if (m == "rsa") flag = RSA::verify(text, sign, key, a);
 		else if (m == "hash") flag = HASH::verify(text, sign, key, a);
@@ -104,9 +115,9 @@ struct JWT extends BaseStruct
 	 */
 	pure string encode(Dict data, string key, string algo)
 	{
-		string data_json = rtl::json_encode(data);
+		string data_json = rtl::jsonEncode(data);
 		string data_b64 = rs::base64_encode_url(data_json);
-		string head_b64 = rs::base64_encode_url(rtl::json_encode({'alg':algo,'typ':'JWT'}));
+		string head_b64 = rs::base64_encode_url(rtl::jsonEncode({'alg':algo,'typ':'JWT'}));
 		string sign = static::createSign(head_b64, data_b64, key, algo);
 		return new JWT
 		{
@@ -131,12 +142,12 @@ struct JWT extends BaseStruct
 		
 		/* Decode head */
 		string head_json = rs::base64_decode(head_b64);
-		Dict head_data = rtl::json_decode(head_json);
+		Dict head_data = rtl::jsonDecode(head_json);
 		if (head_data == null) return null;
 		
 		/* Decode data */
 		string data_json = rs::base64_decode(data_b64);
-		Dict data = rtl::json_decode(data_json);
+		Dict data = rtl::jsonDecode(data_json);
 		if (data == null) return null;
 		
 		/* Check algo */
@@ -172,5 +183,4 @@ struct JWT extends BaseStruct
 			"token": token_str,
 		};
 	}
-	
 }
