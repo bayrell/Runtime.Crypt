@@ -1,7 +1,7 @@
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,35 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
- 
-namespace Runtime.Crypt;
 
-class Password
-{
-	
-	/**
-	 * Verify password
-	 */
-	pure bool verify(string password, string hash)
-	{
-		#switch
-		#case ifcode PHP then
-		return password_verify($password, $hash);
-		#endswitch
-		return false;
-	}
-	
-	
-	/**
-	 * Create password hash
-	 */
-	pure string createHash(string password)
-	{
-		#switch
-		#case ifcode PHP then
-		return password_hash($password, PASSWORD_BCRYPT, ['cost'=>11]);
-		#endswitch
-		return "";
-	}
-	
-}
+const use = require("bay-lang").use;
+exports.MODULE_NAME = "Runtime.Crypt";
