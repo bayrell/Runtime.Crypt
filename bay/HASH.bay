@@ -20,7 +20,6 @@ namespace Runtime.Crypt;
 
 class HASH
 {
-	
 	/**
 	 * Create md5 string
 	 */
@@ -29,6 +28,9 @@ class HASH
 		#switch
 		#case ifcode PHP then
 		return md5($s);
+		#case ifcode NODEJS then
+		const crypto = require('crypto');
+		return crypto.createHash('md5').update(s, 'utf8').digest('hex');
 		#endswitch
 		return "";
 	}
@@ -42,6 +44,9 @@ class HASH
 		#switch
 		#case ifcode PHP then
 		return hash_hmac($algo, $text, $key, true);
+		#case ifcode NODEJS then
+		const crypto = require('crypto');
+		return crypto.createHmac(algo, key).update(text, 'utf8').digest('hex');
 		#endswitch
 		return "";
 	}
@@ -56,8 +61,11 @@ class HASH
 		#case ifcode PHP then
 		$hash = hash_hmac($algo, $text, $key, true);
 		return hash_equals($sign, $hash);
+		#case ifcode NODEJS then
+		const crypto = require('crypto');
+		const hash = crypto.createHmac(algo, key).update(text, 'utf8').digest('hex');
+		return hash === sign;
 		#endswitch
 		return "";
 	}
-	
 }
